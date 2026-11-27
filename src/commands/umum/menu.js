@@ -18,25 +18,33 @@ export default {
 
     const categoryOrder = ['AI', 'Alat', 'Grup', 'Owner', 'Toko', 'Umum', 'Unduh'];
 
-    for (const catName of categoryOrder) {
-      const cmds = categories.get(catName) || [];
-      if (cmds.length === 0) continue;
-
-      text += `*${catName.toUpperCase()}*\n`;
+    const renderCategory = (catName, cmds) => {
+      if (!cmds || cmds.length === 0) return '';
+      const seen = new Set();
+      const uniqueCmds = [];
       for (const cmd of cmds) {
-        text += `• *${p}${cmd.name}* - ${cmd.description}\n`;
+        const lower = cmd.name.toLowerCase();
+        if (!seen.has(lower)) {
+          seen.add(lower);
+          uniqueCmds.push(cmd);
+        }
       }
-      text += `\n`;
+      if (uniqueCmds.length === 0) return '';
+      let catText = `*${catName.toUpperCase()}*\n`;
+      for (const cmd of uniqueCmds) {
+        catText += `• *${p}${cmd.name}* - ${cmd.description}\n`;
+      }
+      return catText + '\n';
+    };
+
+    for (const catName of categoryOrder) {
+      text += renderCategory(catName, categories.get(catName));
     }
 
     // Tampilkan kategori lain jika ada
     for (const [catName, cmds] of categories.entries()) {
       if (!categoryOrder.includes(catName)) {
-        text += `*${catName.toUpperCase()}*\n`;
-        for (const cmd of cmds) {
-          text += `• *${p}${cmd.name}* - ${cmd.description}\n`;
-        }
-        text += `\n`;
+        text += renderCategory(catName, cmds);
       }
     }
 

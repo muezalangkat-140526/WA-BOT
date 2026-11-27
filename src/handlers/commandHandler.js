@@ -13,6 +13,15 @@ export class CommandRegistry {
   }
 
   /**
+   * Mengosongkan seluruh command dari memori
+   */
+  clear() {
+    this.commands.clear();
+    this.aliases.clear();
+    this.categories.clear();
+  }
+
+  /**
    * Mendaftarkan perintah baru
    * @param {Object} cmd
    * @param {string} cmd.name - Nama perintah utama (misal: 'menu')
@@ -37,7 +46,13 @@ export class CommandRegistry {
     if (!this.categories.has(cmd.category)) {
       this.categories.set(cmd.category, []);
     }
-    this.categories.get(cmd.category).push(cmd);
+    const catList = this.categories.get(cmd.category);
+    const existingIdx = catList.findIndex((c) => c.name.toLowerCase() === name);
+    if (existingIdx !== -1) {
+      catList[existingIdx] = cmd;
+    } else {
+      catList.push(cmd);
+    }
 
     if (Array.isArray(cmd.aliases)) {
       for (const alias of cmd.aliases) {
@@ -78,6 +93,8 @@ export const registry = new CommandRegistry();
  * Memuat semua file command dari folder src/commands secara otomatis
  */
 export async function loadCommands(baseDir = path.join(__dirname, '..', 'commands')) {
+  registry.clear();
+
   if (!fs.existsSync(baseDir)) {
     fs.mkdirSync(baseDir, { recursive: true });
     return;
