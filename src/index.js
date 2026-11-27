@@ -178,6 +178,7 @@ async function startBot() {
     printQRInTerminal: false,
     auth: state,
     generateHighQualityLinkPreview: true,
+    syncFullHistory: false, // Cegah sinkronisasi pesan lama berlebihan penyebab Bad MAC
   });
 
   if (config.bot.pairingNumber && !sock.authState?.creds?.registered) {
