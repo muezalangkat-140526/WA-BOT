@@ -1,0 +1,31 @@
+{
+  "name": "wa-bot-baileys-ai",
+  "version": "1.0.0",
+  "description": "WhatsApp Bot with Baileys and Multi-Provider AI Integration",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "export": "node scripts/export-clean.js"
+  },
+  "keywords": [
+    "whatsapp",
+    "baileys",
+    "ai",
+    "groq",
+    "openai",
+    "gemini"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@whiskeysockets/baileys": "^6.7.12",
+    "dotenv": "^16.4.7",
+    "openai": "^4.86.1",
+    "pino": "^9.6.0",
+    "qrcode-terminal": "^0.12.0",
+    "wa-sticker-formatter": "^5.0.0"
+  }
+}

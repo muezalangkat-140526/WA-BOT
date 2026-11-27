@@ -1,0 +1,8 @@
+.env
+.env.*
+auth_info_baileys/
+node_modules/
+dist-shareable/
+logs/
+.git/
+.vscode/

@@ -1,0 +1,10 @@
+# ========================================================
+# KNOWLEDGE BASE / PUSAT INFORMASI KUSTOM (OPSIONAL)
+# Tuliskan aturan bisnis, FAQ, nomor rekening, info pesantren,
+# atau informasi khusus yang ingin dijawab oleh Salwa Br.
+# ========================================================
+
+Informasi Tambahan:
+- Layanan aktif: 24 Jam nonstop via WhatsApp Bot.
+- Jika ada kendala teknis darurat, hubungi nomor Owner yang tertera di sistem.
+- Bot ini dibuat menggunakan Node.js Baileys dan Multi-Provider AI Engine.
