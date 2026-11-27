@@ -3,6 +3,7 @@ import makeWASocket, {
   useMultiFileAuthState,
   fetchLatestBaileysVersion,
   downloadMediaMessage,
+  makeCacheableSignalKeyStore,
 } from '@whiskeysockets/baileys';
 import pino from 'pino';
 import qrcode from 'qrcode-terminal';
@@ -167,6 +168,7 @@ async function startBot() {
   // 1. Muat seluruh modul perintah modular
   await loadCommands();
 
+  const logger = pino({ level: 'silent' });
   const { state, saveCreds } = await useMultiFileAuthState(AUTH_FOLDER);
   const { version, isLatest } = await fetchLatestBaileysVersion();
 
@@ -174,11 +176,18 @@ async function startBot() {
 
   const sock = makeWASocket({
     version,
-    logger: pino({ level: 'silent' }),
+    logger,
     printQRInTerminal: false,
-    auth: state,
+    auth: {
+      creds: state.creds,
+      keys: makeCacheableSignalKeyStore(state.keys, logger),
+    },
     generateHighQualityLinkPreview: true,
     syncFullHistory: false, // Cegah sinkronisasi pesan lama berlebihan penyebab Bad MAC
+    markOnlineOnConnect: true,
+    getMessage: async (key) => {
+      return null;
+    },
   });
 
   if (config.bot.pairingNumber && !sock.authState?.creds?.registered) {
