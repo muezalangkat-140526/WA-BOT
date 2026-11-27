@@ -16,7 +16,7 @@ export const PROVIDER_BASE_URLS = {
 const provider = (process.env.AI_PROVIDER || (process.env.AI_BASE_URL ? 'custom' : 'groq')).toLowerCase();
 const baseURL = process.env.AI_BASE_URL || PROVIDER_BASE_URLS[provider] || PROVIDER_BASE_URLS.groq;
 
-const rawOwner = process.env.OWNER_NUMBER || '';
+const rawOwner = process.env.OWNER_NUMBER || process.env.OWNER_NUMBERS || '';
 const ownerNumbers = rawOwner
   .split(/[,;\s]+/)
   .map((s) => s.trim().replace(/[^0-9]/g, ''))

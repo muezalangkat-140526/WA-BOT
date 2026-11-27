@@ -23,10 +23,13 @@ const AUTH_FOLDER = 'auth_info_baileys';
 const startTime = Date.now();
 
 /**
- * Validasi apakah pengirim adalah pemilik bot (mendukung multi nomor & WhatsApp LID)
+ * Validasi apakah pengirim adalah pemilik bot (mendukung multi nomor, database extraOwners, & WhatsApp LID)
  */
 function isOwner(msg, senderJid) {
-  if (!config.bot.ownerNumbers.length) return true;
+  const settings = dbSettings.get();
+  const allOwners = Array.from(new Set([...config.bot.ownerNumbers, ...(settings.extraOwners || [])]));
+
+  if (!allOwners.length) return true;
   if (msg?.key?.fromMe) return true;
 
   const cleanSender = (senderJid || '').replace(/[^0-9]/g, '');
@@ -35,7 +38,7 @@ function isOwner(msg, senderJid) {
   const rawRemote = (msg?.key?.remoteJid || '').toLowerCase();
   const cleanPn = (msg?.key?.participantPn || msg?.participantPn || '').replace(/[^0-9]/g, '');
 
-  for (const owner of config.bot.ownerNumbers) {
+  for (const owner of allOwners) {
     if (!owner) continue;
 
     // 1. Pencocokan langsung persis angka (LID / nomor telepon utuh)
@@ -404,7 +407,15 @@ async function startBot() {
 
           // Owner Only Check
           if (cmd.isOwnerOnly && !isOwner(msg, sender)) {
-            await safeReply(sock, remoteJid, '⚠️ Perintah ini hanya dapat dijalankan oleh Owner bot.', msg, sentByBotIds);
+            await safeReply(
+              sock,
+              remoteJid,
+              `⚠️ Perintah ini hanya dapat dijalankan oleh Owner bot.\n\n` +
+                `• _ID WhatsApp Anda:_ \`${sender}\`\n` +
+                `• _Ketik *${p}getlid* untuk melihat ID akun Anda, lalu tambahkan nomor/LID tersebut ke OWNER_NUMBER di .env VPS._`,
+              msg,
+              sentByBotIds
+            );
             continue;
           }
 
