@@ -17,11 +17,14 @@ export default {
       `   • *${p}namabot <nama>* -> Ganti nama bot\n` +
       `   • *${p}setprefix <simbol>* -> Ganti prefix (. / !)\n` +
       `   • *${p}mode <public/self>* -> Mode privat / umum\n` +
-      `   • *${p}addowner <nomor>* -> Daftarkan owner baru\n` +
+      `   • *${p}listowner* -> Tampilkan semua nomor/LID Owner\n` +
+      `   • *${p}addowner <nomor/LID>* -> Daftarkan owner baru\n` +
+      `   • *${p}delowner <nomor/LID>* -> Hapus akses owner\n` +
       `   • *${p}ban / ${p}unban <nomor>* -> Blokir user nakal\n\n` +
       `3. *Pemeliharaan Server:*\n` +
       `   • *${p}status* -> Cek RAM & Uptime\n` +
       `   • *${p}reload* -> Muat ulang seluruh modul file\n` +
+      `   • *${p}syncweb* -> Sinkronisasi portofolio & data website\n` +
       `   • *${p}set* -> Tampilkan ringkasan setelan\n` +
       `   • *${p}bc <pesan>* -> Kirim siaran massal`;
 

@@ -50,28 +50,51 @@ function isOwner(msg, senderJid) {
   if (!allOwners.length) return false;
   if (msg?.key?.fromMe) return true;
 
-  const cleanSender = (senderJid || '').replace(/[^0-9]/g, '');
-  const cleanRemote = (msg?.key?.remoteJid || '').replace(/[^0-9]/g, '');
+  const isGroup = msg?.key?.remoteJid?.endsWith('@g.us');
+  // Di grup, pengirim HANYA msg.key.participant atau senderJid (BUKAN remoteJid grup)
+  const cleanSender = (senderJid || msg?.key?.participant || '').replace(/[^0-9]/g, '');
   const cleanPn = (msg?.key?.participantPn || msg?.participantPn || '').replace(/[^0-9]/g, '');
+  const cleanRemote = (!isGroup ? (msg?.key?.remoteJid || '') : '').replace(/[^0-9]/g, '');
 
-  const senderCandidates = [cleanSender, cleanRemote, cleanPn].filter(Boolean);
+  const senderCandidates = Array.from(new Set([cleanSender, cleanPn, cleanRemote].filter(Boolean)));
 
   for (const owner of allOwners) {
     for (const cand of senderCandidates) {
       // 1. Pencocokan persis angka utuh (LID atau nomor telepon internasional)
       if (cand === owner) return true;
 
-      // 2. Normalisasi nomor Indonesia (hilangkan kode 62 atau 0 di depan)
-      const normCand = cand.startsWith('62') ? cand.slice(2) : cand.startsWith('0') ? cand.slice(1) : cand;
-      const normOwner = owner.startsWith('62') ? owner.slice(2) : owner.startsWith('0') ? owner.slice(1) : owner;
+      // 2. Normalisasi nomor Indonesia (HANYA jika keduanya nomor telepon seluler: 10-14 digit)
+      // Jangan pernah mencocokkan potongan nomor telepon ke LID
+      const isOwnerPhone = owner.length >= 10 && owner.length <= 14;
+      const isCandPhone = cand.length >= 10 && cand.length <= 14;
 
-      if (normOwner.length >= 7 && normCand.length >= 7 && normCand === normOwner) {
-        return true;
+      if (isOwnerPhone && isCandPhone) {
+        const normCand = cand.startsWith('62') ? cand.slice(2) : cand.startsWith('0') ? cand.slice(1) : cand;
+        const normOwner = owner.startsWith('62') ? owner.slice(2) : owner.startsWith('0') ? owner.slice(1) : owner;
+
+        if (normOwner.length >= 8 && normCand.length >= 8 && normCand === normOwner) {
+          return true;
+        }
       }
     }
   }
 
   return false;
+}
+
+/**
+ * Helper validasi apakah pengirim berstatus Admin di dalam grup
+ */
+async function isSenderGroupAdmin(sock, remoteJid, senderJid) {
+  try {
+    const meta = await sock.groupMetadata(remoteJid);
+    const cleanSender = (senderJid || '').replace(/[^0-9]/g, '');
+    return meta.participants.some(
+      (m) => m.id.replace(/[^0-9]/g, '') === cleanSender && (m.admin === 'admin' || m.admin === 'superadmin')
+    );
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -437,6 +460,21 @@ async function startBot() {
             continue;
           }
 
+          // Admin Only Check (Terpusat & Menyeluruh)
+          if (cmd.isAdminOnly) {
+            if (!isGroup) {
+              await safeReply(sock, remoteJid, '⚠️ Perintah ini hanya bisa digunakan di dalam grup WhatsApp.', msg, sentByBotIds);
+              continue;
+            }
+            if (!isOwner(msg, sender)) {
+              const isAdmin = await isSenderGroupAdmin(sock, remoteJid, sender);
+              if (!isAdmin) {
+                await safeReply(sock, remoteJid, '⚠️ Perintah ini hanya dapat dijalankan oleh Admin Grup atau Owner bot.', msg, sentByBotIds);
+                continue;
+              }
+            }
+          }
+
           try {
             await cmd.execute({
               sock,
@@ -532,6 +570,33 @@ async function startBot() {
           const targetCmd = registry.get(firstWord);
           if (targetCmd) {
             const cmdArgs = groupCleanPrompt.slice(firstWord.length).trim();
+
+            // Mode Self Check (Khusus Owner)
+            if (config.bot.selfMode && !isOwner(msg, sender)) {
+              continue;
+            }
+
+            // Owner Only Check
+            if (targetCmd.isOwnerOnly && !isOwner(msg, sender)) {
+              await safeReply(sock, remoteJid, '⚠️ Perintah ini hanya dapat dijalankan oleh Owner bot.', msg, sentByBotIds);
+              continue;
+            }
+
+            // Group Only Check
+            if (targetCmd.isGroupOnly && !isGroup) {
+              await safeReply(sock, remoteJid, '⚠️ Perintah ini hanya bisa digunakan di dalam grup WhatsApp.', msg, sentByBotIds);
+              continue;
+            }
+
+            // Admin Only Check
+            if (targetCmd.isAdminOnly && !isOwner(msg, sender)) {
+              const isAdmin = await isSenderGroupAdmin(sock, remoteJid, sender);
+              if (!isAdmin) {
+                await safeReply(sock, remoteJid, '⚠️ Perintah ini hanya dapat dijalankan oleh Admin Grup atau Owner bot.', msg, sentByBotIds);
+                continue;
+              }
+            }
+
             try {
               await targetCmd.execute({
                 sock,
