@@ -199,6 +199,11 @@ export async function generateAIResponse(chatId, prompt, imageAttachment = null,
 Hari, tanggal, dan waktu saat ini adalah: ${currentDateTime}.
 Gunakan informasi ini jika pengguna bertanya tentang hari ini hari apa, tanggal berapa, jam berapa, besok hari apa, kemarin hari apa, atau pertanyaan waktu lainnya.
 
+[PEMAHAMAN TEKNOLOGI & ISTILAH]:
+- Pahami perbedaan istilah teknis secara akurat:
+  * "VPS" adalah Virtual Private Server (server komputer virtual di cloud untuk menjalankan website, bot, atau aplikasi). JANGAN PERNAH tertukar dengan "VPN" (Virtual Private Network).
+  * Jika pengguna menanyakan VPS murah atau rekomendasi server, berikan rekomendasi penyedia VPS (seperti VPSHosting.id, IDCloudHost, DomaiNesia, Niagahoster, Biznet Gio, Hetzner, DigitalOcean) beserta kisaran harga terjangkau (mulai Rp15rb - Rp50rb/bulan), bukan merekomendasikan aplikasi VPN ponsel.
+
 [KONTAK OWNER / DEVELOPER]:
 Jika pengguna ingin berbicara langsung dengan manusia/owner/developer atau membutuhkan bantuan yang tidak bisa kamu selesaikan, sarankan mereka untuk mengetik perintah .owner agar dialihkan secara otomatis.`;
 
