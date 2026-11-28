@@ -22,6 +22,17 @@ import { startBMKGMonitor } from './bmkgMonitor.js';
 const AUTH_FOLDER = 'auth_info_baileys';
 const startTime = Date.now();
 
+// Cache pesan untuk menangani retry request dan mengatasi "Menunggu pesan ini / Waiting for message"
+const messageStore = new Map();
+function storeMessage(key, message) {
+  if (!key?.id || !message) return;
+  messageStore.set(key.id, message);
+  if (messageStore.size > 1500) {
+    const oldestKey = messageStore.keys().next().value;
+    messageStore.delete(oldestKey);
+  }
+}
+
 /**
  * Validasi apakah pengirim adalah pemilik bot (mendukung multi nomor, database extraOwners, & WhatsApp LID)
  */
@@ -189,9 +200,22 @@ async function startBot() {
     syncFullHistory: false, // Cegah sinkronisasi pesan lama berlebihan penyebab Bad MAC
     markOnlineOnConnect: true,
     getMessage: async (key) => {
+      if (key?.id && messageStore.has(key.id)) {
+        return messageStore.get(key.id);
+      }
       return null;
     },
   });
+
+  // Intersep sendMessage untuk otomatis mencatat pesan keluar ke messageStore agar retry WhatsApp berhasil
+  const originalSendMessage = sock.sendMessage.bind(sock);
+  sock.sendMessage = async (...args) => {
+    const res = await originalSendMessage(...args);
+    if (res?.key && res?.message) {
+      storeMessage(res.key, res.message);
+    }
+    return res;
+  };
 
   if (config.bot.pairingNumber && !sock.authState?.creds?.registered) {
     setTimeout(async () => {
@@ -267,6 +291,7 @@ async function startBot() {
 
     for (const msg of messages) {
       if (!msg.message) continue;
+      storeMessage(msg.key, msg.message);
 
       if (sentByBotIds.has(msg.key.id)) {
         sentByBotIds.delete(msg.key.id);
