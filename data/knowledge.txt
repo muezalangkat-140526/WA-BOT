@@ -1,10 +1,46 @@
 # ========================================================
-# KNOWLEDGE BASE / PUSAT INFORMASI KUSTOM (OPSIONAL)
-# Tuliskan aturan bisnis, FAQ, nomor rekening, info pesantren,
-# atau informasi khusus yang ingin dijawab oleh Salwa Br.
+# KNOWLEDGE BASE UTAMA: SALWA DEV & MUHAMMAD ANWAR
+# Website Resmi: https://www.salwa-dev.my.id/
 # ========================================================
 
-Informasi Tambahan:
-- Layanan aktif: 24 Jam nonstop via WhatsApp Bot.
-- Jika ada kendala teknis darurat, hubungi nomor Owner yang tertera di sistem.
-- Bot ini dibuat menggunakan Node.js Baileys dan Multi-Provider AI Engine.
+1. PROFIL PENGEMBANG / OWNER:
+- Nama: Muhammad Anwar
+- Profesi: Full-Stack Web Developer & UI/UX Designer
+- Domisili: Medan, Sumatera Utara, Indonesia
+- Brand/Studio: salwa.dev
+- Tagline: "Membangun Pengalaman Digital yang Bermakna & Terukur. Merancang dan merekayasa solusi web modern dengan arsitektur bersih, performa tinggi, dan antarmuka futuristik yang intuitif."
+- Status Ketersediaan: Tersedia untuk proyek baru (freelance, kontrak, kerja sama lembaga/bisnis).
+
+2. LAYANAN & SPESIALISASI:
+- Pembuatan Website Kustom (Web Application / Company Profile / Portal Informasi).
+- Pengembangan Sistem Informasi Pendidikan & Pesantren (Integrasi PSB / SPSS Online).
+- Sistem Manajemen Transaksi & Tata Kelola Pembayaran Digital (seperti arsitektur SantriPay).
+- Desain Antarmuka UI/UX Modern berstandar aksesibilitas (WCAG 2.2 AA) menggunakan Figma.
+- Pengembangan Bot Otomasi WhatsApp & Integrasi Kecerdasan Buatan (AI Engine).
+- Desain arsitektur database, REST API, dan integrasi backend cloud modern.
+
+3. KEAHLIAN & TEKNOLOGI (TECH STACK):
+- Frontend: Next.js, React, TypeScript, Tailwind CSS, Shadcn UI
+- Backend & Cloud: Node.js, Supabase, Express.js
+- Database & Storage: PostgreSQL
+- UI/UX & Design Systems: Figma (Refined Glass & UI/UX Systems)
+- DevOps & Tools: Git, Docker, Cloud VPS Linux
+
+4. PORTOFOLIO TERPILIH (FEATURED PROJECTS):
+a. SantriPay v2.0:
+   - Deskripsi: Sistem manajemen transaksi dan tata kelola pembayaran digital terpadu untuk ekosistem santri dan lembaga pendidikan.
+   - Peran: Super Admin & Full-Stack Architect (2023 — Sekarang).
+   - Tech: Next.js, React, TypeScript, Tailwind CSS, Node.js, PostgreSQL, Git.
+b. Pondok Pesantren Modern Al Qomariyah:
+   - Deskripsi: Website profil pesantren modern yang mengintegrasikan informasi lembaga pendidikan, publikasi kegiatan santri, dan sistem Penerimaan Santri Baru (PSB/SPSS) secara online yang profesional dan mobile-friendly.
+   - Peran: Web Developer & UI/UX Designer.
+   - Tech: Next.js, React, TypeScript, Tailwind CSS, Node.js, PostgreSQL, Git.
+
+5. RIWAYAT KARIR & PENGALAMAN:
+- Super Admin & Full-Stack Architect (2023 — Sekarang) di SantriPay Development, Medan.
+- Full-Stack Web Developer & UI/UX Designer (2022 — Sekarang) di Freelance & Independent Projects, Medan.
+
+6. PEDOMAN MENJAWAB PERTANYAAN CALON KLIEN / PENGUNJUNG:
+- Jika calon klien menyapa atau menanyakan layanan website, jelaskan dengan ramah, sopan, dan percaya diri bahwa nomor ini adalah kontak resmi dari salwa.dev (Muhammad Anwar).
+- Jelaskan layanan, keahlian teknologi, dan contoh portofolio yang relevan dengan kebutuhan calon klien.
+- Jika calon klien ingin mendiskusikan anggaran/biaya khusus, membuat janji temu, atau berkonsultasi langsung dengan Muhammad Anwar, arahkan mereka dengan sopan untuk mengetik perintah *.owner* agar langsung terhubung secara pribadi.
