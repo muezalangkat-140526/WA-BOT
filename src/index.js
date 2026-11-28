@@ -38,47 +38,34 @@ function storeMessage(key, message) {
  */
 function isOwner(msg, senderJid) {
   const settings = dbSettings.get();
-  const allOwners = Array.from(new Set([...config.bot.ownerNumbers, ...(settings.extraOwners || [])]));
+  const allOwners = Array.from(
+    new Set(
+      [...config.bot.ownerNumbers, ...(settings.extraOwners || [])]
+        .map((s) => (s || '').replace(/[^0-9]/g, ''))
+        .filter((s) => s.length >= 6)
+    )
+  );
 
-  if (!allOwners.length) return true;
+  // Jika tidak ada owner terdaftar, tolak semua perintah owner demi keamanan
+  if (!allOwners.length) return false;
   if (msg?.key?.fromMe) return true;
 
   const cleanSender = (senderJid || '').replace(/[^0-9]/g, '');
-  const rawSender = (senderJid || '').toLowerCase();
   const cleanRemote = (msg?.key?.remoteJid || '').replace(/[^0-9]/g, '');
-  const rawRemote = (msg?.key?.remoteJid || '').toLowerCase();
   const cleanPn = (msg?.key?.participantPn || msg?.participantPn || '').replace(/[^0-9]/g, '');
 
+  const senderCandidates = [cleanSender, cleanRemote, cleanPn].filter(Boolean);
+
   for (const owner of allOwners) {
-    if (!owner) continue;
+    for (const cand of senderCandidates) {
+      // 1. Pencocokan persis angka utuh (LID atau nomor telepon internasional)
+      if (cand === owner) return true;
 
-    // 1. Pencocokan langsung persis angka (LID / nomor telepon utuh)
-    if (
-      cleanSender === owner ||
-      cleanSender.includes(owner) ||
-      rawSender.includes(owner) ||
-      cleanRemote === owner ||
-      cleanRemote.includes(owner) ||
-      rawRemote.includes(owner) ||
-      cleanPn.includes(owner)
-    ) {
-      return true;
-    }
+      // 2. Normalisasi nomor Indonesia (hilangkan kode 62 atau 0 di depan)
+      const normCand = cand.startsWith('62') ? cand.slice(2) : cand.startsWith('0') ? cand.slice(1) : cand;
+      const normOwner = owner.startsWith('62') ? owner.slice(2) : owner.startsWith('0') ? owner.slice(1) : owner;
 
-    // 2. Pencocokan nomor telepon tanpa kode negara 62 / 0
-    let coreOwner = owner;
-    if (owner.startsWith('62')) {
-      coreOwner = owner.slice(2);
-    } else if (owner.startsWith('0')) {
-      coreOwner = owner.slice(1);
-    }
-
-    if (coreOwner.length >= 7) {
-      if (
-        cleanSender.includes(coreOwner) ||
-        cleanRemote.includes(coreOwner) ||
-        cleanPn.includes(coreOwner)
-      ) {
+      if (normOwner.length >= 7 && normCand.length >= 7 && normCand === normOwner) {
         return true;
       }
     }
